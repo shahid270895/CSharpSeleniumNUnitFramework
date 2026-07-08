@@ -29,4 +29,6 @@ public static class ConfigReader
 
     public static int RetryCount => int.Parse(configuration["RetryCount"]!);
 
+    public static bool Headless => bool.Parse(configuration["Headless"]!);
+
 }
