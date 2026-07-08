@@ -1,6 +1,5 @@
 using Microsoft.Extensions.Configuration;
 
-
 namespace LearningNUnit2026.Utilities;
 
 public static class ConfigReader
@@ -15,9 +14,26 @@ public static class ConfigReader
             .Build();
     }
 
-    public static BrowserType Browser => Enum.Parse<BrowserType>(configuration["Browser"]!, true);
+    public static BrowserType Browser
+    {
+        get
+        {
+            string browser =
+                System.Environment.GetEnvironmentVariable("Browser") ?? configuration["Browser"]!;
+            return Enum.Parse<BrowserType>(browser, true);
+        }
+    }
 
-    public static EnvironmentType Environment => Enum.Parse<EnvironmentType>(configuration["Environment"]!, true);
+    public static EnvironmentType Environment
+    {
+        get
+        {
+            string environment =
+                System.Environment.GetEnvironmentVariable("Environment")
+                ?? configuration["Environment"]!;
+            return Enum.Parse<EnvironmentType>(environment, true);
+        }
+    }
 
     public static string BaseUrl => configuration[$"Urls:{Environment}"]!;
 
@@ -29,6 +45,14 @@ public static class ConfigReader
 
     public static int RetryCount => int.Parse(configuration["RetryCount"]!);
 
-    public static bool Headless => bool.Parse(configuration["Headless"]!);
+    public static bool Headless
+    {
+        get
+        {
+            string headless =
+                System.Environment.GetEnvironmentVariable("Headless") ?? configuration["Headless"]!;
 
+            return bool.Parse(headless);
+        }
+    }
 }
