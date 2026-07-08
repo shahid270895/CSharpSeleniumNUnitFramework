@@ -10,6 +10,17 @@ on:
       - main
 
   workflow_dispatch:
+    inputs:
+      testCategory:
+        description: "Select Test Suite"
+        required: true
+        default: "All"
+        type: choice
+        options:
+          - All
+          - Smoke
+          - Regression
+          - Sanity
 
 jobs:
 
@@ -42,25 +53,54 @@ jobs:
       run: dotnet build LearningNUnit.csproj --configuration Release --no-restore
 
     - name: Execute Tests
-      run: dotnet test LearningNUnit.csproj --configuration Release
+      shell: pwsh
+      env:
+        Browser: Chrome
+        Environment: QA
+        Headless: true
+      run: |
+        if ("${{ github.event.inputs.testCategory }}" -eq "All" -or "${{ github.event.inputs.testCategory }}" -eq "")
+        {
+            Write-Host "=========================================="
+            Write-Host "Executing ALL Tests"
+            Write-Host "=========================================="
+
+            dotnet test LearningNUnit.csproj `
+            --configuration Release `
+            --no-build
+        }
+        else
+        {
+            Write-Host "=========================================="
+            Write-Host "Executing ${{ github.event.inputs.testCategory }} Tests"
+            Write-Host "=========================================="
+
+            dotnet test LearningNUnit.csproj `
+            --configuration Release `
+            --no-build `
+            --filter "Category=${{ github.event.inputs.testCategory }}"
+        }
 
     - name: Upload Extent Report
       if: always()
       uses: actions/upload-artifact@v4
       with:
         name: ExtentReport
-        path: Reports/*.html
+        path: Reports/**/*.html
+        if-no-files-found: warn
 
     - name: Upload Screenshots
       if: always()
       uses: actions/upload-artifact@v4
       with:
         name: Screenshots
-        path: Reports/Screenshots
+        path: Reports/Screenshots/**
+        if-no-files-found: warn
 
     - name: Upload Logs
       if: always()
       uses: actions/upload-artifact@v4
       with:
         name: Logs
-        path: Reports/Logs
+        path: Reports/Logs/**
+        if-no-files-found: warn

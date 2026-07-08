@@ -11,6 +11,8 @@ class LoginTest : BaseTest
 {
     [Test]
     [RetryAnalyzer]
+    [Category("Smoke")]
+    [Category("Regression")]
     public void VerifyValidLogin()
     {
         loginPage.OpenApplication();
@@ -27,6 +29,7 @@ class LoginTest : BaseTest
     
     [Test]
     [RetryAnalyzer]
+    [Category("Regression")]
     public void VerifyInvalidLogin()
     {
         loginPage.OpenApplication();

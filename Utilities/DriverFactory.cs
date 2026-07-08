@@ -17,18 +17,41 @@ public class DriverFactory
         switch (ConfigReader.Browser)
         {
             case BrowserType.Chrome:
-                driver = new ChromeDriver();
+                ChromeOptions chromeOptions = new ChromeOptions();
+                if (ConfigReader.Headless)
+                {
+                    chromeOptions.AddArgument("--headless=new");
+                }
+                chromeOptions.AddArgument("--start-maximized");
+                chromeOptions.AddArgument("--disable-gpu");
+                chromeOptions.AddArgument("--no-sandbox");
+                chromeOptions.AddArgument("--disable-dev-shm-usage");
+                driver = new ChromeDriver(chromeOptions);
                 FrameworkLogger.Info("Chrome Browser Launched Successfully.");
+                FrameworkLogger.Info($"Headless Mode : {ConfigReader.Headless}");
                 break;
 
             case BrowserType.Edge:
-                driver = new EdgeDriver();
-                FrameworkLogger.Info("Edge Browser Launched Successfully.");
-                break;
+                EdgeOptions edgeOptions = new EdgeOptions();
 
+                if (ConfigReader.Headless)
+                {
+                    edgeOptions.AddArgument("--headless=new");
+                }
+                driver = new EdgeDriver(edgeOptions);
+                FrameworkLogger.Info("Edge Browser Launched Successfully.");
+                FrameworkLogger.Info($"Headless Mode : {ConfigReader.Headless}");
+                break;
+                
             case BrowserType.Firefox:
-                driver = new FirefoxDriver();
+                FirefoxOptions firefoxOptions = new FirefoxOptions();
+                if (ConfigReader.Headless)
+                {
+                    firefoxOptions.AddArgument("--headless");
+                }
+                driver = new FirefoxDriver(firefoxOptions);
                 FrameworkLogger.Info("Firefox Browser Launched Successfully.");
+                FrameworkLogger.Info($"Headless Mode : {ConfigReader.Headless}");
                 break;
 
             default:
