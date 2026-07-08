@@ -1,0 +1,38 @@
+# Build folders
+bin/
+obj/
+
+# Visual Studio
+.vs/
+
+# VS Code
+.vscode/
+
+# Rider
+.idea/
+
+# User files
+*.user
+*.suo
+
+# Test Results
+TestResults/
+
+# Reports
+Reports/
+
+# Logs
+Logs/
+
+# Screenshots
+Screenshots/
+
+# NuGet
+packages/
+
+# ReSharper
+_ReSharper*/
+
+# OS files
+Thumbs.db
+Desktop.ini
