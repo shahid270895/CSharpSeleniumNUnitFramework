@@ -5,6 +5,12 @@ on:
     branches:
       - main
 
+  pull_request:
+    branches:
+      - main
+
+  workflow_dispatch:
+
 jobs:
 
   build:
@@ -21,11 +27,40 @@ jobs:
       with:
         dotnet-version: 9.0.x
 
+    - name: Cache NuGet Packages
+      uses: actions/cache@v4
+      with:
+        path: ~/.nuget/packages
+        key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}
+        restore-keys: |
+          ${{ runner.os }}-nuget-
+
     - name: Restore Packages
-      run: dotnet restore
+      run: dotnet restore LearningNUnit.csproj
 
     - name: Build Project
-      run: dotnet build --configuration Release --no-restore
+      run: dotnet build LearningNUnit.csproj --configuration Release --no-restore
 
     - name: Execute Tests
       run: dotnet test LearningNUnit.csproj --configuration Release
+
+    - name: Upload Extent Report
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: ExtentReport
+        path: Reports/*.html
+
+    - name: Upload Screenshots
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: Screenshots
+        path: Reports/Screenshots
+
+    - name: Upload Logs
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: Logs
+        path: Reports/Logs
