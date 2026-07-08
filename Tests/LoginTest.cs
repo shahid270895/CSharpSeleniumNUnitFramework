@@ -24,6 +24,7 @@ class LoginTest : BaseTest
         loginPage.ClickLoginButton();
         Thread.Sleep(5000);
     }
+    
     [Test]
     [RetryAnalyzer]
     public void VerifyInvalidLogin()
