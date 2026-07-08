@@ -35,7 +35,7 @@ class LoginTest : BaseTest
         loginPage.EnterPassword(JsonDataReader.GetValue("InvalidLogin", "Password"));
         loginPage.ClickLoginButton();
         Thread.Sleep(2000);
-        Assert.That(loginPage.GetErrorText() == "Invalid credential");
+        Assert.That(loginPage.GetErrorText() == "Invalid credentials");
         Thread.Sleep(2000);
     }
 
