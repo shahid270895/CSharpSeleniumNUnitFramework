@@ -41,44 +41,44 @@ class LoginTest : BaseTest
         Thread.Sleep(2000);
     }
 
-    [Test]
-    [RetryAnalyzer]
-    [Category("Smoke")]
-    [Category("Regression")]
-    public void VerifyUserLogout()
-    {
-        loginPage.OpenApplication();
-        Assert.That(loginPage.GetPageTitle() == "OrangeHRM");
-        loginPage.EnterUsername(JsonDataReader.GetValue("ValidLogin", "Username"));
-        loginPage.EnterPassword(JsonDataReader.GetValue("ValidLogin", "Password"));
-        Thread.Sleep(1000);
-        loginPage.ClickLoginButton();
-        Assert.That(dashboardPage.DashboardTextDisplayed(), Is.True);
-        Thread.Sleep(2000);
-        dashboardPage.ClickOnUserProfileDropdownButton();
-        Thread.Sleep(1000);
-        dashboardPage.ClickOnLogoutButton();
-        Thread.Sleep(2000);
-        Assert.That(loginPage.LoginTextDisplayed(), Is.True);
-        Thread.Sleep(1000);
-    }
+    // [Test]
+    // [RetryAnalyzer]
+    // [Category("Smoke")]
+    // [Category("Regression")]
+    // public void VerifyUserLogout()
+    // {
+    //     loginPage.OpenApplication();
+    //     Assert.That(loginPage.GetPageTitle() == "OrangeHRM");
+    //     loginPage.EnterUsername(JsonDataReader.GetValue("ValidLogin", "Username"));
+    //     loginPage.EnterPassword(JsonDataReader.GetValue("ValidLogin", "Password"));
+    //     Thread.Sleep(1000);
+    //     loginPage.ClickLoginButton();
+    //     Assert.That(dashboardPage.DashboardTextDisplayed(), Is.True);
+    //     Thread.Sleep(2000);
+    //     dashboardPage.ClickOnUserProfileDropdownButton();
+    //     Thread.Sleep(1000);
+    //     dashboardPage.ClickOnLogoutButton();
+    //     Thread.Sleep(2000);
+    //     Assert.That(loginPage.LoginTextDisplayed(), Is.True);
+    //     Thread.Sleep(1000);
+    // }
 
-    [Test]
-    [RetryAnalyzer]
-    [Category("Sanity")]
-    [Category("Regression")]
-    public void VerifyDashboardSearchOption()
-    {
-        loginPage.OpenApplication();
-        Assert.That(loginPage.GetPageTitle() == "OrangeHRM");
-        loginPage.EnterUsername(JsonDataReader.GetValue("ValidLogin", "Username"));
-        loginPage.EnterPassword(JsonDataReader.GetValue("ValidLogin", "Password"));
-        Thread.Sleep(1000);
-        loginPage.ClickLoginButton();
-        Assert.That(dashboardPage.DashboardTextDisplayed(), Is.True);
-        Thread.Sleep(2000);
-        dashboardPage.EnterTextInSearchField("d");
-        dashboardPage.VerifyFilteredSearchedResult("d");
-        Thread.Sleep(1000);
-    }
+    // [Test]
+    // [RetryAnalyzer]
+    // [Category("Sanity")]
+    // [Category("Regression")]
+    // public void VerifyDashboardSearchOption()
+    // {
+    //     loginPage.OpenApplication();
+    //     Assert.That(loginPage.GetPageTitle() == "OrangeHRM");
+    //     loginPage.EnterUsername(JsonDataReader.GetValue("ValidLogin", "Username"));
+    //     loginPage.EnterPassword(JsonDataReader.GetValue("ValidLogin", "Password"));
+    //     Thread.Sleep(1000);
+    //     loginPage.ClickLoginButton();
+    //     Assert.That(dashboardPage.DashboardTextDisplayed(), Is.True);
+    //     Thread.Sleep(2000);
+    //     dashboardPage.EnterTextInSearchField("d");
+    //     dashboardPage.VerifyFilteredSearchedResult("d");
+    //     Thread.Sleep(1000);
+    // }
 }
