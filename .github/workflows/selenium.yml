@@ -84,9 +84,10 @@ jobs:
     - name: Execute Tests
       shell: pwsh
       env:
-        Browser: ${{ github.event.inputs.browser }}
-        Environment: ${{ github.event.inputs.environment }}
-        Headless: ${{ github.event.inputs.headless }}
+        Browser: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.browser || 'Chrome' }}
+        Environment: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.environment || 'QA' }}
+        Headless: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.headless || 'true' }}
+        TestCategory: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.testCategory || 'All' }}
       run: |
 
         Write-Host ""
@@ -96,22 +97,22 @@ jobs:
         Write-Host "Browser      : $env:Browser"
         Write-Host "Environment  : $env:Environment"
         Write-Host "Headless     : $env:Headless"
-        Write-Host "Test Suite   : ${{ github.event.inputs.testCategory }}"
+        Write-Host "Test Suite   : $env:TestCategory"
         Write-Host "==========================================="
         Write-Host ""
 
-        if ("${{ github.event.inputs.testCategory }}" -eq "All" -or "${{ github.event.inputs.testCategory }}" -eq "")
+        if ($env:TestCategory -eq "All")
         {
             dotnet test LearningNUnit.csproj `
-            --configuration Release `
-            --no-build
+              --configuration Release `
+              --no-build
         }
         else
         {
             dotnet test LearningNUnit.csproj `
-            --configuration Release `
-            --no-build `
-            --filter "Category=${{ github.event.inputs.testCategory }}"
+              --configuration Release `
+              --no-build `
+              --filter "Category=$env:TestCategory"
         }
 
     - name: Upload Extent Report

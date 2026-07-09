@@ -18,9 +18,12 @@ public static class ConfigReader
     {
         get
         {
-            string browser =
-                System.Environment.GetEnvironmentVariable("Browser") ?? configuration["Browser"]!;
-            return Enum.Parse<BrowserType>(browser, true);
+            string? browser = System.Environment.GetEnvironmentVariable("Browser");
+            if (string.IsNullOrWhiteSpace(browser))
+            {
+                browser = configuration["Browser"];
+            }
+            return Enum.Parse<BrowserType>(browser!, true);
         }
     }
 
@@ -28,10 +31,10 @@ public static class ConfigReader
     {
         get
         {
-            string environment =
-                System.Environment.GetEnvironmentVariable("Environment")
-                ?? configuration["Environment"]!;
-            return Enum.Parse<EnvironmentType>(environment, true);
+            string? environment = System.Environment.GetEnvironmentVariable("Environment");
+            if (string.IsNullOrWhiteSpace(environment))
+                environment = configuration["Environment"];
+            return Enum.Parse<EnvironmentType>(environment!, true);
         }
     }
 
@@ -49,10 +52,21 @@ public static class ConfigReader
     {
         get
         {
-            string headless =
-                System.Environment.GetEnvironmentVariable("Headless") ?? configuration["Headless"]!;
+            string? headless = System.Environment.GetEnvironmentVariable("Headless");
+            if (string.IsNullOrWhiteSpace(headless))
+                headless = configuration["Headless"];
+            return bool.Parse(headless!);
+        }
+    }
+    public static CategoryType TestCategory
+    {
+        get
+        {
+            string? category = System.Environment.GetEnvironmentVariable("TestCategory");
+            if (string.IsNullOrWhiteSpace(category))
+                category = configuration["TestCategory"];
 
-            return bool.Parse(headless);
+            return Enum.Parse<CategoryType>(category!, true);
         }
     }
 }

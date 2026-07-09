@@ -22,6 +22,20 @@ public class WaitHelper
         });
     }
 
+    public IReadOnlyCollection<IWebElement> WaitForAllVisibleElements(By locator)
+    {
+        return wait.Until(driver =>
+        {
+            var elements = driver.FindElements(locator);
+
+            if (elements.Count > 0 && elements.All(e => e.Displayed))
+            {
+                return elements;
+            }
+            return null;
+        });
+    }
+
     public IWebElement WaitForElementClickable(By locator)
     {
         return wait.Until(driver =>
@@ -91,5 +105,4 @@ public class WaitHelper
             return driver.FindElement(locator).Text.Contains(expectedText);
         });
     }
-
 }

@@ -4,12 +4,20 @@ public enum BrowserType
 {
     Chrome,
     Edge,
-    Firefox
+    Firefox,
 }
 
 public enum EnvironmentType
 {
     QA,
     Staging,
-    Production
+    Production,
+}
+
+public enum CategoryType
+{
+    All,
+    Smoke,
+    Sanity,
+    Regression,
 }

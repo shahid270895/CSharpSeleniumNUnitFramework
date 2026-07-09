@@ -4,11 +4,13 @@ using AventStack.ExtentReports.Reporter.Config;
 
 namespace LearningNUnit2026.Utilities;
 
-public class ExtentManager
+public static class ExtentManager
 {
     private static ExtentReports extent = null!;
     private static ExtentSparkReporter sparkReporter = null!;
-    public static ExtentTest test = null!;
+    private static readonly ThreadLocal<ExtentTest> test = new();
+    public static ExtentTest Test => test.Value!;
+    public static bool HasCurrentTest => test.Value != null;
 
     public static ExtentReports GetExtent()
     {
@@ -39,6 +41,8 @@ public class ExtentManager
             extent.AddSystemInfo("Automation Tool", "Selenium");
             extent.AddSystemInfo("Browser", ConfigReader.Browser.ToString());
             extent.AddSystemInfo("Environment", ConfigReader.Environment.ToString());
+            extent.AddSystemInfo("Headless", ConfigReader.Headless.ToString());
+            extent.AddSystemInfo("Test Category", ConfigReader.TestCategory.ToString());
             extent.AddSystemInfo("OS", Environment.OSVersion.ToString());
         }
 
@@ -47,6 +51,6 @@ public class ExtentManager
 
     public static void CreateTest(string testName)
     {
-        test = GetExtent().CreateTest(testName);
+        test.Value = GetExtent().CreateTest(testName);
     }
 }

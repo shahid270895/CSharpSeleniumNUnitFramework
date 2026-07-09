@@ -2,13 +2,11 @@
 // using LearningNUnit2026.Base;
 // using NUnit.Framework.Internal;
 
-
 // namespace LearningNUnit2026.Tests;
 
+// [Parallelizable(ParallelScope.All)]
 // public class GoogleTest : BaseTest
 // {
-    
-
 //     [Test]
 //     public void VerifyGooglePageTitle()
 //     {
@@ -26,10 +24,4 @@
 //         TestContext.WriteLine(driver.Title);
 //         Assert.That(driver.Url.Contains("google"));
 //     }
-    
-
-   
-
-
-
 // }
