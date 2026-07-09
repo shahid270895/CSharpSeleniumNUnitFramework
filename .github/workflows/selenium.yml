@@ -34,7 +34,7 @@ on:
       testCategory:
         description: "Select Test Suite"
         required: true
-        default: "All"
+        default: "Smoke"
         type: choice
         options:
           - All
