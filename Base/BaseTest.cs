@@ -1,7 +1,7 @@
+using AventStack.ExtentReports;
 using LearningNUnit2026.Pages;
 using LearningNUnit2026.Utilities;
 using OpenQA.Selenium;
-using AventStack.ExtentReports;
 using Serilog;
 using static Serilog.Log;
 
@@ -10,19 +10,18 @@ namespace LearningNUnit2026.Base;
 public class BaseTest
 {
     protected IWebDriver driver = null!;
-    protected static ExtentReports extent = null!;
-    protected ExtentTest test = null!;
     protected LoginPage loginPage = null!;
-    
+    protected DashboardPage dashboardPage = null!;
+
     [SetUp]
     public void Setup()
     {
         Console.WriteLine("Launching Browser...");
         ExtentManager.CreateTest(TestContext.CurrentContext.Test.Name);
-        test = ExtentManager.test;
         driver = DriverFactory.LaunchBrowser();
         JsonDataReader.LoadJson("LoginData.json");
         loginPage = new LoginPage(driver);
+        dashboardPage = new DashboardPage(driver);
     }
 
     [TearDown]
@@ -32,42 +31,51 @@ public class BaseTest
 
         if (status == NUnit.Framework.Interfaces.TestStatus.Failed)
         {
-            string errorMessage = TestContext.CurrentContext.Result.Message ?? "No error message available.";
-            string stackTrace = TestContext.CurrentContext.Result.StackTrace ?? "No stack trace available.";
+            string errorMessage =
+                TestContext.CurrentContext.Result.Message ?? "No error message available.";
+            string stackTrace =
+                TestContext.CurrentContext.Result.StackTrace ?? "No stack trace available.";
 
-            test.Fail(errorMessage);
-            test.Fail(stackTrace);
+            ExtentManager.Test.Fail(errorMessage);
+            ExtentManager.Test.Fail(stackTrace);
 
-            string screenshotPath = ScreenshotHelper.CaptureScreenshot(driver, TestContext.CurrentContext.Test.Name);
+            string screenshotPath = ScreenshotHelper.CaptureScreenshot(
+                driver,
+                TestContext.CurrentContext.Test.Name
+            );
 
             string relativePath = $"Screenshots/{Path.GetFileName(screenshotPath)}";
 
-            test.AddScreenCaptureFromPath(relativePath, "Failure Screenshot");
+            ExtentManager.Test.AddScreenCaptureFromPath(relativePath, "Failure Screenshot");
         }
         else if (status == NUnit.Framework.Interfaces.TestStatus.Passed)
         {
-            test.Pass("Test Passed");
+            ExtentManager.Test.Pass("Test Passed");
         }
         else
         {
-            test.Skip("Test Skipped");
+            ExtentManager.Test.Skip("Test Skipped");
         }
 
-        DriverFactory.CloseBrowser(driver);
+        DriverFactory.CloseBrowser();
     }
 
     [OneTimeSetUp]
     public void BeforeSuite()
     {
         Console.WriteLine("========== Test Suite Started ==========");
+        FrameworkLogger.Info($"Browser     : {ConfigReader.Browser}");
+        FrameworkLogger.Info($"Environment : {ConfigReader.Environment}");
+        FrameworkLogger.Info($"Headless    : {ConfigReader.Headless}");
+        FrameworkLogger.Info($"Test Suite  : {ConfigReader.TestCategory}");
         LoggerHelper.ConfigureLogger();
-        extent = ExtentManager.GetExtent();
+        ExtentManager.GetExtent();
     }
 
     [OneTimeTearDown]
     public void AfterSuite()
     {
-        extent.Flush();
+        ExtentManager.GetExtent().Flush();
         LoggerHelper.CloseLogger();
         Console.WriteLine("========== Test Suite Finished ==========");
     }

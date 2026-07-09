@@ -1,5 +1,5 @@
-using OpenQA.Selenium;
 using LearningNUnit2026.Utilities;
+using OpenQA.Selenium;
 using Serilog;
 using static Serilog.Log;
 
@@ -31,9 +31,7 @@ public class BasePage
     public void EnterText(By locator, string text)
     {
         IWebElement element = waitHelper.WaitForElementVisible(locator);
-
         element.Clear();
-
         element.SendKeys(text);
         FrameworkLogger.Info("Entered text");
     }
@@ -62,5 +60,15 @@ public class BasePage
         return driver.Title;
     }
 
-
+    public List<string> GetListValues(By locator)
+    {
+        var elements = waitHelper.WaitForAllVisibleElements(locator);
+        List<string> elementsName = new List<string>();
+        foreach (var ele in elements)
+        {
+            elementsName.Add(ele.Text);
+        }
+        FrameworkLogger.Info("All Elements displayed.");
+        return elementsName;
+    }
 }
