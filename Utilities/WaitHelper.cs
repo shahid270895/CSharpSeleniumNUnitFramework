@@ -1,7 +1,7 @@
 using OpenQA.Selenium;
 using OpenQA.Selenium.Support.UI;
 
-namespace LearningNUnit2026.Utilities;
+namespace SpecFlowAutomationFramework2026.Utilities;
 
 public class WaitHelper
 {

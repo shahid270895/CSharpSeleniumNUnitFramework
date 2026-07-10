@@ -1,7 +1,7 @@
 using Serilog;
 using Serilog.Events;
 
-namespace LearningNUnit2026.Utilities;
+namespace SpecFlowAutomationFramework2026.Utilities;
 
 public static class LoggerHelper
 {

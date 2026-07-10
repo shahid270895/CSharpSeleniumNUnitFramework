@@ -1,16 +1,13 @@
-using LearningNUnit2026.Utilities;
 using OpenQA.Selenium;
-using Serilog;
-using static Serilog.Log;
 
-namespace LearningNUnit2026.Base;
+namespace SpecFlowAutomationFramework2026.Utilities;
 
-public class BasePage
+public class CommonSeleniumAction
 {
     public IWebDriver driver;
     public WaitHelper waitHelper;
 
-    public BasePage(IWebDriver driver)
+    public CommonSeleniumAction(IWebDriver driver)
     {
         this.driver = driver;
         waitHelper = new WaitHelper(driver);

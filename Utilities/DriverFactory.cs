@@ -5,7 +5,7 @@ using OpenQA.Selenium.Firefox;
 using Serilog;
 using static Serilog.Log;
 
-namespace LearningNUnit2026.Utilities;
+namespace SpecFlowAutomationFramework2026.Utilities;
 
 public static class DriverFactory
 {

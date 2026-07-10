@@ -2,7 +2,7 @@ using AventStack.ExtentReports;
 using AventStack.ExtentReports.Reporter;
 using AventStack.ExtentReports.Reporter.Config;
 
-namespace LearningNUnit2026.Utilities;
+namespace SpecFlowAutomationFramework2026.Utilities;
 
 public static class ExtentManager
 {
@@ -12,7 +12,7 @@ public static class ExtentManager
     public static ExtentTest Test => test.Value!;
     public static bool HasCurrentTest => test.Value != null;
 
-    public static ExtentReports GetExtent()
+    public static ExtentReports InitializeReport()
     {
         if (extent == null)
         {
@@ -36,7 +36,7 @@ public static class ExtentManager
             extent.AttachReporter(sparkReporter);
 
             extent.AddSystemInfo("Tester", Environment.UserName);
-            extent.AddSystemInfo("Framework", "NUnit");
+            extent.AddSystemInfo("Framework", "SpecFlow BDD");
             extent.AddSystemInfo("Language", "C#");
             extent.AddSystemInfo("Automation Tool", "Selenium");
             extent.AddSystemInfo("Browser", ConfigReader.Browser.ToString());
@@ -51,6 +51,11 @@ public static class ExtentManager
 
     public static void CreateTest(string testName)
     {
-        test.Value = GetExtent().CreateTest(testName);
+        test.Value = InitializeReport().CreateTest(testName);
+    }
+
+    public static void FlushReport()
+    {
+        extent?.Flush();
     }
 }

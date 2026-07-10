@@ -1,9 +1,9 @@
-using LearningNUnit2026.Base;
+using SpecFlowAutomationFramework2026.Utilities;
 using OpenQA.Selenium;
 
-namespace LearningNUnit2026.Pages;
+namespace SpecFlowAutomationFramework2026.Pages;
 
-public class LoginPage : BasePage
+public class LoginPage : CommonSeleniumAction
 {
     public LoginPage(IWebDriver driver)
         : base(driver)
