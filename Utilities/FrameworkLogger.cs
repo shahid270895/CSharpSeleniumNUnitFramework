@@ -1,6 +1,6 @@
 using Serilog;
 
-namespace LearningNUnit2026.Utilities;
+namespace SpecFlowAutomationFramework2026.Utilities;
 
 public static class FrameworkLogger
 {

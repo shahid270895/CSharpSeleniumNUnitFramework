@@ -1,4 +1,4 @@
-name: Selenium NUnit Automation
+name: Selenium SpecFlow Automation
 
 on:
   push:
@@ -11,25 +11,35 @@ on:
 
   workflow_dispatch:
     inputs:
+
+      executionMode:
+        description: "Execution Mode"
+        required: true
+        default: "Single"
+        type: choice
+        options:
+          - Single
+          - CrossBrowser
+
       browser:
-        description: "Select Browser"
+        description: "Select Browser (Only for Single Mode)"
         required: true
         default: "Chrome"
         type: choice
         options:
-        - Chrome
-        - Firefox
-        - Edge
-      
+          - Chrome
+          - Firefox
+          - Edge
+
       environment:
         description: "Select Environment"
         required: true
         default: "QA"
         type: choice
         options:
-        - QA
-        - Staging
-        - Production
+          - QA
+          - Staging
+          - Production
 
       testCategory:
         description: "Select Test Suite"
@@ -43,98 +53,209 @@ on:
           - Sanity
 
       headless:
-        description: "Run in Headless Mode"
+        description: "Run Headless"
         required: true
         default: "true"
         type: choice
         options:
-        - "true"
-        - "false"
+          - "true"
+          - "false"
 
 jobs:
 
-  build:
+####################################################################
+# SINGLE BROWSER EXECUTION
+####################################################################
+
+  single-browser:
+
+    if: github.event_name != 'workflow_dispatch' || github.event.inputs.executionMode == 'Single'
 
     runs-on: windows-latest
 
     steps:
 
-    - name: Checkout Project
-      uses: actions/checkout@v4
+      - name: Checkout Project
+        uses: actions/checkout@v4
 
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v4
-      with:
-        dotnet-version: 9.0.x
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 9.0.x
 
-    - name: Cache NuGet Packages
-      uses: actions/cache@v4
-      with:
-        path: ~/.nuget/packages
-        key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}
-        restore-keys: |
-          ${{ runner.os }}-nuget-
+      - name: Cache NuGet Packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}
+          restore-keys: |
+            ${{ runner.os }}-nuget-
 
-    - name: Restore Packages
-      run: dotnet restore LearningNUnit.csproj
+      - name: Restore Packages
+        run: dotnet restore SpecFlowAutomationFramework.csproj
 
-    - name: Build Project
-      run: dotnet build LearningNUnit.csproj --configuration Release --no-restore
+      - name: Build Project
+        run: dotnet build SpecFlowAutomationFramework.csproj --configuration Release --no-restore
 
-    - name: Execute Tests
-      shell: pwsh
-      env:
-        Browser: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.browser || 'Chrome' }}
-        Environment: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.environment || 'QA' }}
-        Headless: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.headless || 'true' }}
-        TestCategory: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.testCategory || 'All' }}
-      run: |
+      - name: Execute Tests
+        shell: pwsh
+        env:
+          Browser: ${{ github.event.inputs.browser || 'Chrome' }}
+          Environment: ${{ github.event.inputs.environment || 'QA' }}
+          Headless: ${{ github.event.inputs.headless || 'true' }}
+          TestCategory: ${{ github.event.inputs.testCategory || 'All' }}
+        run: |
 
-        Write-Host ""
-        Write-Host "==========================================="
-        Write-Host "Execution Details"
-        Write-Host "==========================================="
-        Write-Host "Browser      : $env:Browser"
-        Write-Host "Environment  : $env:Environment"
-        Write-Host "Headless     : $env:Headless"
-        Write-Host "Test Suite   : $env:TestCategory"
-        Write-Host "==========================================="
-        Write-Host ""
+          Write-Host ""
+          Write-Host "==========================================="
+          Write-Host " SINGLE BROWSER EXECUTION "
+          Write-Host "==========================================="
+          Write-Host "Browser      : $env:Browser"
+          Write-Host "Environment  : $env:Environment"
+          Write-Host "Headless     : $env:Headless"
+          Write-Host "Category     : $env:TestCategory"
+          Write-Host "Runner       : $env:RUNNER_NAME"
+          Write-Host "==========================================="
 
-        if ($env:TestCategory -eq "All")
-        {
-            dotnet test LearningNUnit.csproj `
-              --configuration Release `
-              --no-build
-        }
-        else
-        {
-            dotnet test LearningNUnit.csproj `
-              --configuration Release `
-              --no-build `
-              --filter "Category=$env:TestCategory"
-        }
+          if ($env:TestCategory -eq "All")
+          {
+              dotnet test SpecFlowAutomationFramework.csproj `
+                --configuration Release `
+                --no-build
+          }
+          else
+          {
+              dotnet test SpecFlowAutomationFramework.csproj `
+                --configuration Release `
+                --no-build `
+                --filter "Category=$env:TestCategory"
+          }
 
-    - name: Upload Extent Report
-      if: always()
-      uses: actions/upload-artifact@v4
-      with:
-        name: ExtentReport
-        path: Reports/**/*.html
-        if-no-files-found: warn
+      - name: Upload Extent Report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ExtentReport-${{ github.event.inputs.browser || 'Chrome' }}
+          path: Reports/**/*.html
+          if-no-files-found: warn
 
-    - name: Upload Screenshots
-      if: always()
-      uses: actions/upload-artifact@v4
-      with:
-        name: Screenshots
-        path: Reports/Screenshots/**
-        if-no-files-found: warn
+      - name: Upload Screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: Screenshots-${{ github.event.inputs.browser || 'Chrome' }}
+          path: Reports/Screenshots/**
+          if-no-files-found: warn
 
-    - name: Upload Logs
-      if: always()
-      uses: actions/upload-artifact@v4
-      with:
-        name: Logs
-        path: Reports/Logs/**
-        if-no-files-found: warn
+      - name: Upload Logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: Logs-${{ github.event.inputs.browser || 'Chrome' }}
+          path: Reports/Logs/**
+          if-no-files-found: warn
+
+####################################################################
+# CROSS BROWSER MATRIX EXECUTION
+####################################################################
+
+  cross-browser:
+
+    if: github.event_name == 'workflow_dispatch' && github.event.inputs.executionMode == 'CrossBrowser'
+
+    runs-on: windows-latest
+
+    strategy:
+      fail-fast: false
+
+      matrix:
+        browser:
+          - Chrome
+          - Firefox
+          - Edge
+
+    name: "${{ matrix.browser }} | ${{ github.event.inputs.environment }} | ${{ github.event.inputs.testCategory }}"
+
+    steps:
+
+      - name: Checkout Project
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 9.0.x
+
+      - name: Cache NuGet Packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}
+          restore-keys: |
+            ${{ runner.os }}-nuget-
+
+      - name: Restore Packages
+        run: dotnet restore SpecFlowAutomationFramework.csproj
+
+      - name: Build Project
+        run: dotnet build SpecFlowAutomationFramework.csproj --configuration Release --no-restore
+
+      - name: Execute Tests
+        shell: pwsh
+        env:
+          Browser: ${{ matrix.browser }}
+          Environment: ${{ github.event.inputs.environment }}
+          Headless: ${{ github.event.inputs.headless }}
+          TestCategory: ${{ github.event.inputs.testCategory }}
+        run: |
+
+          Write-Host ""
+          Write-Host "==========================================="
+          Write-Host " CROSS BROWSER EXECUTION "
+          Write-Host "==========================================="
+          Write-Host "Browser      : $env:Browser"
+          Write-Host "Environment  : $env:Environment"
+          Write-Host "Headless     : $env:Headless"
+          Write-Host "Category     : $env:TestCategory"
+          Write-Host "Runner       : $env:RUNNER_NAME"
+          Write-Host "OS           : $env:RUNNER_OS"
+          Write-Host "==========================================="
+          Write-Host ""
+
+          if ($env:TestCategory -eq "All")
+          {
+              dotnet test SpecFlowAutomationFramework.csproj `
+                --configuration Release `
+                --no-build
+          }
+          else
+          {
+              dotnet test SpecFlowAutomationFramework.csproj `
+                --configuration Release `
+                --no-build `
+                --filter "Category=$env:TestCategory"
+          }
+
+      - name: Upload Extent Report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ExtentReport-${{ matrix.browser }}
+          path: Reports/**/*.html
+          if-no-files-found: warn
+
+      - name: Upload Screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: Screenshots-${{ matrix.browser }}
+          path: Reports/Screenshots/**
+          if-no-files-found: warn
+
+      - name: Upload Logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: Logs-${{ matrix.browser }}
+          path: Reports/Logs/**
+          if-no-files-found: warn

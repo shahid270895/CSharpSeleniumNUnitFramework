@@ -1,10 +1,9 @@
-using System.Linq;
-using LearningNUnit2026.Base;
+using SpecFlowAutomationFramework2026.Utilities;
 using OpenQA.Selenium;
 
-namespace LearningNUnit2026.Pages;
+namespace SpecFlowAutomationFramework2026.Pages;
 
-public class DashboardPage : BasePage
+public class DashboardPage : CommonSeleniumAction
 {
     public DashboardPage(IWebDriver driver)
         : base(driver)
@@ -22,10 +21,9 @@ public class DashboardPage : BasePage
 
     private readonly By logoutButton = By.XPath("//ul//li//a[text()='Logout']");
 
-    public bool DashboardTextDisplayed()
+    public string GetDashboardHeader()
     {
-        bool isPresent = IsDisplayed(dashboardHeaderText);
-        return isPresent;
+        return GetElementText(dashboardHeaderText);
     }
 
     public void ClickOnUserProfileDropdownButton()

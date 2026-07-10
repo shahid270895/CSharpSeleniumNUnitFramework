@@ -1,7 +1,7 @@
 #nullable enable
 using System.IO;
 
-namespace LearningNUnit2026.Utilities;
+namespace SpecFlowAutomationFramework2026.Utilities;
 
 public static class PathHelper
 {

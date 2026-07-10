@@ -1,6 +1,6 @@
 using Microsoft.Extensions.Configuration;
 
-namespace LearningNUnit2026.Utilities;
+namespace SpecFlowAutomationFramework2026.Utilities;
 
 public static class ConfigReader
 {
@@ -45,8 +45,6 @@ public static class ConfigReader
     public static int ExplicitWait => int.Parse(configuration["ExplicitWait"]!);
 
     public static string ScreenshotPath => configuration["ScreenshotPath"]!;
-
-    public static int RetryCount => int.Parse(configuration["RetryCount"]!);
 
     public static bool Headless
     {
