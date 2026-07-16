@@ -110,22 +110,8 @@ steps:
     failTaskOnFailedTests: false
 
 - task: PublishPipelineArtifact@1
-  displayName: Publish Extent Report
+  displayName: Publish Reports
   condition: always()
   inputs:
     targetPath: Reports
-    artifact: ExtentReport
-
-- task: PublishPipelineArtifact@1
-  displayName: Publish Screenshots
-  condition: always()
-  inputs:
-    targetPath: Reports/Screenshots
-    artifact: Screenshots
-
-- task: PublishPipelineArtifact@1
-  displayName: Publish Logs
-  condition: always()
-  inputs:
-    targetPath: Reports/Logs
-    artifact: Logs
+    artifact: Reports
