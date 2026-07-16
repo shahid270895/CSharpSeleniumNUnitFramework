@@ -4,7 +4,7 @@ As a valid user
 I want to login into OrangeHRM
 So that I can access the Dashboard
 
-@Smoke
+@Smoke @Regression
 Scenario Outline: Verify login with different users
 
     Given User launches the application

@@ -35,13 +35,26 @@ public static class ExtentManager
 
             extent.AttachReporter(sparkReporter);
 
+            string browser =
+                Environment.GetEnvironmentVariable("Browser") ?? ConfigReader.Browser.ToString();
+
+            string environment =
+                Environment.GetEnvironmentVariable("Environment")
+                ?? ConfigReader.Environment.ToString();
+
+            string headless =
+                Environment.GetEnvironmentVariable("Headless") ?? ConfigReader.Headless.ToString();
+
             extent.AddSystemInfo("Tester", Environment.UserName);
             extent.AddSystemInfo("Framework", "SpecFlow BDD");
             extent.AddSystemInfo("Language", "C#");
             extent.AddSystemInfo("Automation Tool", "Selenium");
-            extent.AddSystemInfo("Browser", ConfigReader.Browser.ToString());
-            extent.AddSystemInfo("Environment", ConfigReader.Environment.ToString());
-            extent.AddSystemInfo("Headless", ConfigReader.Headless.ToString());
+            // extent.AddSystemInfo("Browser", ConfigReader.Browser.ToString());
+            // extent.AddSystemInfo("Environment", ConfigReader.Environment.ToString());
+            // extent.AddSystemInfo("Headless", ConfigReader.Headless.ToString());
+            extent.AddSystemInfo("Browser", browser);
+            extent.AddSystemInfo("Environment", environment);
+            extent.AddSystemInfo("Headless", headless);
             extent.AddSystemInfo("Test Category", ConfigReader.TestCategory.ToString());
             extent.AddSystemInfo("OS", Environment.OSVersion.ToString());
         }
