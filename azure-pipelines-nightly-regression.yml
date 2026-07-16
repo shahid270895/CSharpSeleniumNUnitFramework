@@ -60,7 +60,6 @@ steps:
     Write-Host " NIGHTLY REGRESSION EXECUTION "
     Write-Host "========================================"
 
-    Write-Host "Execution Time : $(Build.QueuedTime)"
     Write-Host "Browser        : $(Browser)"
     Write-Host "Environment    : $(Environment)"
     Write-Host "Category       : Regression"
@@ -88,10 +87,27 @@ steps:
     failTaskOnFailedTests: false
     testRunTitle: Nightly Regression
 
-- task: PublishPipelineArtifact@1
-  displayName: Publish Reports
+- powershell: |
+    $reportPath = "$(Build.SourcesDirectory)\Reports"
+
+    if (Test-Path $reportPath)
+    {
+        Write-Host "Reports folder found."
+        Write-Host "##vso[task.setvariable variable=ReportsExist]true"
+    }
+    else
+    {
+        Write-Host "Reports folder not found."
+        Write-Host "##vso[task.setvariable variable=ReportsExist]false"
+    }
+
+  displayName: Check Reports Folder
   condition: always()
 
+- task: PublishPipelineArtifact@1
+  displayName: Publish Reports
+  condition: and(always(), eq(variables['ReportsExist'], 'true'))
+
   inputs:
-    targetPath: Reports
+    targetPath: '$(Build.SourcesDirectory)\Reports'
     artifact: Nightly-Regression-Reports
