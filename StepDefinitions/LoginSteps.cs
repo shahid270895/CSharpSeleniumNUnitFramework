@@ -1,6 +1,5 @@
 using SpecFlowAutomationFramework2026.Pages;
 using SpecFlowAutomationFramework2026.Utilities;
-using NUnit.Framework;
 using TechTalk.SpecFlow;
 
 namespace SpecFlowAutomationFramework2026.StepDefinitions;
@@ -23,15 +22,13 @@ public class LoginSteps
         loginPage.OpenApplication();
     }
 
-    [When(@"User enters username ""(.*)""")]
-    public void WhenUserEntersUsername(string username)
+    [When(@"User enters ""(.*)"" credentials")]
+    public void WhenUserEntersCredentials(string userType)
     {
-        loginPage.EnterUsername(username);
-    }
+        string username = JsonDataReader.GetValue(userType, "Username");
+        string password = JsonDataReader.GetValue(userType, "Password");
 
-    [When(@"User enters password ""(.*)""")]
-    public void WhenUserEntersPassword(string password)
-    {
+        loginPage.EnterUsername(username);
         loginPage.EnterPassword(password);
     }
 
@@ -41,9 +38,37 @@ public class LoginSteps
         loginPage.ClickLoginButton();
     }
 
-    [Then(@"User should be navigated to Dashboard page")]
-    public void ThenUserShouldBeNavigatedToDashboardPage()
+    [Then(@"User should see ""(.*)""")]
+    public void ThenUserShouldSee(string expectedResult)
     {
-        Assert.That(dashboardPage.GetDashboardHeader(), Is.EqualTo("Dashboard"));
+        switch (expectedResult)
+        {
+            case "Dashboard":
+
+                Assert.That(dashboardPage.GetDashboardHeader(), Is.EqualTo("Dashboard"));
+
+                break;
+
+            case "Invalid Login":
+
+                Assert.That(
+                    loginPage.GetInvalidCredentialMessage(),
+                    Is.EqualTo("Invalid credentials")
+                );
+
+                break;
+
+            case "Validation":
+
+                Assert.That(loginPage.GetRequiredFieldMessage(), Is.EqualTo("Required"));
+
+                break;
+
+            default:
+
+                Assert.Fail($"Unknown Expected Result : {expectedResult}");
+
+                break;
+        }
     }
 }

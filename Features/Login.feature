@@ -5,10 +5,16 @@ I want to login into OrangeHRM
 So that I can access the Dashboard
 
 @Smoke
-Scenario: Verify successful login
+Scenario Outline: Verify login with different users
 
     Given User launches the application
-    When User enters username "Admin"
-    And User enters password "admin123"
+    When User enters "<UserType>" credentials
     And User clicks on Login button
-    Then User should be navigated to Dashboard page
+    Then User should see "<ExpectedResult>"
+    
+Examples:
+
+| UserType    | ExpectedResult |
+| ValidUser   | Dashboard      |
+| InvalidUser | Invalid Login  |
+| BlankUser   | Validation     |

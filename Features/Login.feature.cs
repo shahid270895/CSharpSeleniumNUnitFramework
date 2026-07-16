@@ -75,14 +75,24 @@ namespace SpecFlowAutomationFramework.Features
         }
         
         [NUnit.Framework.TestAttribute()]
-        [NUnit.Framework.DescriptionAttribute("Verify successful login")]
+        [NUnit.Framework.DescriptionAttribute("Verify login with different users")]
         [NUnit.Framework.CategoryAttribute("Smoke")]
-        public void VerifySuccessfulLogin()
+        [NUnit.Framework.TestCaseAttribute("ValidUser", "Dashboard", null)]
+        [NUnit.Framework.TestCaseAttribute("InvalidUser", "Invalid Login", null)]
+        [NUnit.Framework.TestCaseAttribute("BlankUser", "Validation", null)]
+        public void VerifyLoginWithDifferentUsers(string userType, string expectedResult, string[] exampleTags)
         {
-            string[] tagsOfScenario = new string[] {
+            string[] @__tags = new string[] {
                     "Smoke"};
+            if ((exampleTags != null))
+            {
+                @__tags = System.Linq.Enumerable.ToArray(System.Linq.Enumerable.Concat(@__tags, exampleTags));
+            }
+            string[] tagsOfScenario = @__tags;
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Verify successful login", null, tagsOfScenario, argumentsOfScenario, featureTags);
+            argumentsOfScenario.Add("UserType", userType);
+            argumentsOfScenario.Add("ExpectedResult", expectedResult);
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Verify login with different users", null, tagsOfScenario, argumentsOfScenario, featureTags);
 #line 8
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
@@ -97,16 +107,13 @@ this.ScenarioInitialize(scenarioInfo);
     testRunner.Given("User launches the application", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
 #line 11
-    testRunner.When("User enters username \"Admin\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+    testRunner.When(string.Format("User enters \"{0}\" credentials", userType), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
 #line 12
-    testRunner.And("User enters password \"admin123\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-#line hidden
-#line 13
     testRunner.And("User clicks on Login button", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 14
-    testRunner.Then("User should be navigated to Dashboard page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+#line 13
+    testRunner.Then(string.Format("User should see \"{0}\"", expectedResult), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
             }
             this.ScenarioCleanup();
