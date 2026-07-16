@@ -1,5 +1,5 @@
-using SpecFlowAutomationFramework2026.Utilities;
 using OpenQA.Selenium;
+using SpecFlowAutomationFramework2026.Utilities;
 
 namespace SpecFlowAutomationFramework2026.Pages;
 
@@ -19,12 +19,13 @@ public class LoginPage : CommonSeleniumAction
 
     private readonly By loginButton = By.XPath("//button");
 
-    private readonly By errorText = By.XPath("//p[text()='Invalid credentials']");
+    private readonly By invalidCredentialMessage = By.XPath("//p[text()='Invalid credentials']");
+
+    private readonly By requiredFieldMessage = By.XPath("//span[text()='Required']");
 
     public bool LoginTextDisplayed()
     {
-        bool isPresent = IsDisplayed(loginHeaderText);
-        return isPresent;
+        return IsDisplayed(loginHeaderText);
     }
 
     public void EnterUsername(string username)
@@ -42,9 +43,13 @@ public class LoginPage : CommonSeleniumAction
         ClickOnElement(loginButton);
     }
 
-    public string GetErrorText()
+    public string GetInvalidCredentialMessage()
     {
-        string errorTextValue = GetElementText(errorText);
-        return errorTextValue;
+        return GetElementText(invalidCredentialMessage);
+    }
+
+    public string GetRequiredFieldMessage()
+    {
+        return GetElementText(requiredFieldMessage);
     }
 }

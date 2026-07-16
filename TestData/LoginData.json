@@ -1,11 +1,16 @@
 {
-  "ValidLogin": {
+  "ValidUser": {
     "Username": "Admin",
     "Password": "admin123"
   },
 
-  "InvalidLogin": {
+  "InvalidUser": {
     "Username": "Admin",
     "Password": "Admin@1234"
+  },
+
+  "BlankUser": {
+    "Username": "",
+    "Password": ""
   }
 }

@@ -10,18 +10,28 @@ public static class JsonDataReader
     {
         string filePath = Path.Combine(PathHelper.TestDataFolder, fileName);
 
+        if (!File.Exists(filePath))
+        {
+            throw new FileNotFoundException($"JSON file not found: {filePath}");
+        }
+
         jsonDocument = JsonDocument.Parse(File.ReadAllText(filePath));
     }
 
     public static string GetValue(params string[] keys)
     {
-        JsonElement element = jsonDocument!.RootElement;
+        if (jsonDocument == null)
+        {
+            throw new InvalidOperationException("JSON file is not loaded. Call LoadJson() first.");
+        }
+
+        JsonElement element = jsonDocument.RootElement;
 
         foreach (string key in keys)
         {
             element = element.GetProperty(key);
         }
 
-        return element.GetString()!;
+        return element.GetString() ?? string.Empty;
     }
 }
