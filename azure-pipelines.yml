@@ -4,45 +4,128 @@ trigger:
 pr:
 - main
 
+parameters:
+
+- name: browser
+  displayName: Browser
+  type: string
+  default: Chrome
+  values:
+    - Chrome
+    - Firefox
+    - Edge
+
+- name: environment
+  displayName: Environment
+  type: string
+  default: QA
+  values:
+    - QA
+    - Staging
+    - Production
+
+- name: testCategory
+  displayName: Test Category
+  type: string
+  default: All
+  values:
+    - All
+    - Smoke
+    - Regression
+    - Sanity
+
+- name: headless
+  displayName: Headless
+  type: boolean
+  default: true
+
 pool:
-  vmImage: 'windows-latest'
+  vmImage: windows-latest
 
 variables:
-  BuildConfiguration: 'Release'
+  BuildConfiguration: Release
 
 steps:
 
 - checkout: self
 
 - task: UseDotNet@2
-  displayName: 'Install .NET SDK'
+  displayName: Install .NET SDK
   inputs:
-    packageType: 'sdk'
-    version: '9.0.x'
+    packageType: sdk
+    version: 9.0.x
 
 - task: DotNetCoreCLI@2
-  displayName: 'Restore Packages'
+  displayName: Restore Packages
   inputs:
-    command: 'restore'
-    projects: 'SpecFlowAutomationFramework.csproj'
+    command: restore
+    projects: SpecFlowAutomationFramework.csproj
 
 - task: DotNetCoreCLI@2
-  displayName: 'Build Project'
+  displayName: Build Project
   inputs:
-    command: 'build'
-    projects: 'SpecFlowAutomationFramework.csproj'
-    arguments: '--configuration $(BuildConfiguration) --no-restore'
+    command: build
+    projects: SpecFlowAutomationFramework.csproj
+    arguments: --configuration $(BuildConfiguration) --no-restore
 
-- task: DotNetCoreCLI@2
-  displayName: 'Run NUnit Tests'
-  inputs:
-    command: 'test'
-    projects: 'SpecFlowAutomationFramework.csproj'
-    arguments: '--configuration $(BuildConfiguration) --no-build --logger trx'
+- powershell: |
+
+    Write-Host "==========================================="
+    Write-Host "Azure Pipeline Execution"
+    Write-Host "==========================================="
+    Write-Host "Browser      : ${{ parameters.browser }}"
+    Write-Host "Environment  : ${{ parameters.environment }}"
+    Write-Host "Headless     : ${{ parameters.headless }}"
+    Write-Host "Category     : ${{ parameters.testCategory }}"
+    Write-Host "==========================================="
+
+    $env:Browser="${{ parameters.browser }}"
+    $env:Environment="${{ parameters.environment }}"
+    $env:Headless="${{ parameters.headless }}"
+
+    if("${{ parameters.testCategory }}" -eq "All")
+    {
+        dotnet test SpecFlowAutomationFramework.csproj `
+            --configuration $(BuildConfiguration) `
+            --no-build `
+            --logger trx
+    }
+    else
+    {
+        dotnet test SpecFlowAutomationFramework.csproj `
+            --configuration $(BuildConfiguration) `
+            --no-build `
+            --logger trx `
+            --filter "Category=${{ parameters.testCategory }}"
+    }
+
+  displayName: Execute NUnit Tests
 
 - task: PublishTestResults@2
-  displayName: 'Publish Test Results'
+  displayName: Publish Test Results
   condition: always()
   inputs:
-    testResultsFormat: 'VSTest'
+    testResultsFormat: VSTest
     testResultsFiles: '**/*.trx'
+    failTaskOnFailedTests: false
+
+- task: PublishPipelineArtifact@1
+  displayName: Publish Extent Report
+  condition: always()
+  inputs:
+    targetPath: Reports
+    artifact: ExtentReport
+
+- task: PublishPipelineArtifact@1
+  displayName: Publish Screenshots
+  condition: always()
+  inputs:
+    targetPath: Reports/Screenshots
+    artifact: Screenshots
+
+- task: PublishPipelineArtifact@1
+  displayName: Publish Logs
+  condition: always()
+  inputs:
+    targetPath: Reports/Logs
+    artifact: Logs
