@@ -2,7 +2,7 @@ trigger:
 - main
 
 pool:
-  vmImage: 'AutomationPool-20-07-26'
+  name: 'AutomationPool-20-07-26'
 
 steps:
 
