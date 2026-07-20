@@ -37,9 +37,11 @@ steps:
     arguments: '--configuration Release'
 
 # Publish Test Results
-- task: PublishTestResults@2
-  displayName: 'Publish Test Results'
+- task: DotNetCoreCLI@2
+  displayName: Run NUnit Tests
   inputs:
-    testResultsFormat: 'VSTest'
-    testResultsFiles: '**/*.trx'
-    failTaskOnFailedTests: true
+    command: test
+    projects: '**/*.csproj'
+    arguments: >
+      --configuration Release
+      --logger "trx;LogFileName=TestResults.trx"
