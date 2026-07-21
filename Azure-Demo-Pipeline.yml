@@ -3,6 +3,8 @@ trigger:
 
 pool:
   name: 'AutomationPool-20-07-26'
+  demands:
+  - Browser -equals Chrome
 
 steps:
 
