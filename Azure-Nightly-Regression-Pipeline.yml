@@ -4,8 +4,6 @@
 
 trigger: none
 
-pr: none
-
 schedules:
 
 - cron: "30 20 * * *"

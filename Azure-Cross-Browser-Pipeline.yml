@@ -1,7 +1,5 @@
 trigger: none
 
-pr: none
-
 parameters:
 
 - name: environment

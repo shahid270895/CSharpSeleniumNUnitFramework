@@ -27,7 +27,7 @@ parameters:
 - name: testCategory
   displayName: Test Category
   type: string
-  default: Smoke
+  default: All
   values:
     - All
     - Smoke
